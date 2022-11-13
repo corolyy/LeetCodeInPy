@@ -20,6 +20,14 @@ class ListNode(object):
 
 
 class Solution:
+    def reverse_list_briefly(self, head: ListNode) -> ListNode:
+        # 递推法
+        # 原理: 反转指针之后需要保留下一个对象，这样就能迭代下去，直到当前实例为None
+        # 复杂度: time O(N) space O(1)
+        pre, cur = None, head
+        while cur is not None:
+            pre, cur.next, cur = cur, pre, cur.next
+        return pre
     def reverse_list(self, head: ListNode) -> ListNode:
         # 递推法
         # 原理: 反转指针之后需要保留下一个对象，这样就能迭代下去，直到当前实例为None
@@ -29,7 +37,7 @@ class Solution:
             temp = cur.next
             cur.next = pre
             pre, cur = cur, temp
-        return cur
+        return pre
 
     def reverse_list_brute_force(self, head: ListNode) -> ListNode:
         if head is None or head.next is None:
