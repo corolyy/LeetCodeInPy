@@ -25,12 +25,11 @@ class Solution:
 
         思路: 构建大顶堆, pop K次即可得到结果
         """
+        max_heap, nums_len = [], len(nums)
         # 构造大顶堆
-        pq = []
         for num in nums:
-            heapq.heappush(pq, num)
-        # 获取第k大
-        res = None
-        for _ in range(len(nums) + 1 - k):
-            res = heapq.heappop(pq)
-        return res
+            heapq.heappush(max_heap, num)
+        # 连续pop(len - k - 1)次
+        for idx in range(nums_len - k):
+            heapq.heappop(max_heap)
+        return heapq.heappop(max_heap)

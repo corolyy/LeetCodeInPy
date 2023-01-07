@@ -24,46 +24,29 @@ class Solution:
         self._random_inst = Random()
 
     def findKthLargest(self, nums: List[int], k: int) -> int:
-        """ 快排拓展
+        """ 快排, partition得到pivot坐标为len - k即可
 
-        思路: partition分治
+        实现: 根据pivot坐标与(len -k)相对大小判断向左/向右偏序分治即可, 不需要全量排序
         """
-        def swap(idx_0, idx_1):
-            nums[idx_0], nums[idx_1] = nums[idx_1], nums[idx_0]
-
         def partition(left, right):
-            # 随机取pivot
-            pivot_idx = self._random_inst.randint(left, right)
-            # pivot置于首位, 固定partition坐标
-            swap(left, pivot_idx)
-            pivot = nums[left]
-            while left < right:
-                # 右指针找到比pivot小的第一个数，与pivot互换，保证right往右都不比pivot小
-                while left < right and nums[right] >= pivot:
-                    right -= 1
-                swap(left, right)
-                # 左指针找到pivot大的第一个数，与pivot互换，保证left向左都不比pivot大
-                while left < right and nums[left] <= pivot:
-                    left += 1
-                swap(left, right)  # 此时pivot又回到了left位
-                # 继续下一轮，每一轮有序度都在增加
-            return left
+            pivot, l, r = nums[left], left, right
+            while l < r:
+                while l < r and nums[r] >= pivot:
+                    r -= 1
+                nums[l] = nums[r]
+                while l < r and nums[l] <= pivot:
+                    l += 1
+                nums[r] = nums[l]
+            nums[l] = pivot
+            return l
 
-        # 确认目标顺位
-        target = len(nums) - k
-
-        # 迭代寻找目标
-        l, r = 0, len(nums) - 1
-        while l < r:
-            piv_idx = partition(l, r)
-            if target == piv_idx:
-                return nums[piv_idx]
-
-            if target < piv_idx:
-                # target比pivot小, 在左区间
-                r = piv_idx - 1
+        target, l_idx, r_idx = len(nums) - k, 0, len(nums) - 1
+        while l_idx < r_idx:
+            pivot_idx = partition(l_idx, r_idx)
+            if pivot_idx > target:
+                r_idx = pivot_idx - 1
+            elif pivot_idx < target:
+                l_idx = pivot_idx + 1
             else:
-                # target比pivot大，在右区间
-                l = piv_idx + 1
-
+                return nums[target]
         return nums[target]

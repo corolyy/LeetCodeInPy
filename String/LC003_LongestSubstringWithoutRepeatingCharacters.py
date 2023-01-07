@@ -36,17 +36,15 @@ class Solution:
             - r < len
           3. 使用set记录重复
         '''
-        l, r, str_cnt, max_len = 0, 0, {}, 0
+        l, r, visited, max_len = 0, 0, set(), 0
         while r < len(s):
-            # 每一轮只考量一个字符
-            latest_char = s[r]
-            str_cnt[latest_char] = 1 if not str_cnt.get(latest_char, 0) else str_cnt[latest_char] + 1
-            # 判断是开始收缩
-            while str_cnt[latest_char] > 1:
-                str_cnt[s[l]] = str_cnt[s[l]] - 1
+            # 直接判断是否需要收缩
+            while s[r] in visited:
+                visited.remove(s[l])
                 l += 1
-            # 计算当前最大长度(不能放在收缩循环，因为会漏掉最后一个非重子串的长度)
+            visited.add(s[r])
             max_len = max(max_len, r - l + 1)
-            # 每一轮只考量一个字符
+            # 开始扩张
             r += 1
         return max_len
+

@@ -22,33 +22,26 @@ def quick_sort(nums, l, r):
     pivot_idx = partition(nums, 0, len(nums) - 1)
     partition(nums, 0, pivot)
 """
-from random import Random
-
-random_inst = Random()
-
-
-def swap(num_list, idx_0, idx_1):
-    num_list[idx_0], num_list[idx_1] = num_list[idx_1], num_list[idx_0]
-
-
-def partition(num_list, l, r):
-    # 随机选择, 打破最坏条件
-    pivot_idx = random_inst.randint(l, r)
-    # 不交换到头指针的话，后面找pivot_idx会比较复杂
-    swap(num_list, l, pivot_idx)
-    pivot_val = num_list[l]
+def partition(num_list, left, right):
+    """
+    思路:
+        1. 多轮调整，每轮只调整一组数据(有序度提高0~2)
+        2. 选择最左侧元素作为pivot, 交换过程:
+           a) 每1轮从右向左找到第1个比pivot小的, 放到当前左侧;
+           b) 每1轮从左向右找到第1个比pivot大的, 放到当前右侧;
+           c) 最终当前左坐标与右坐标相等，将pivot置于此处;
+    优化:
+        1. 随机选择元素作为pivot, 和最左侧交换
+    """
+    pivot, l, r = num_list[left], left, right
     while l < r:
-        # 右指针找到小于pivot的第一个数
-        while l < r and num_list[r] >= pivot_val:
-            r = r - 1
-        # 交换小于pivot的第一个数和pivot，这样pivot左侧有序度不变，右侧递增
-        swap(num_list, l, r)
-        # 左指针找到大于pivot的第一个数
-        while l < r and num_list[l] <= pivot_val:
-            l = l + 1
-        # 交换大于pivot的第一个数和pivot，这样pivot右侧有序度不变，左侧递减
-        swap(num_list, l, r)
-        # 一轮循环结束，保证pivot还在l，l左侧 <= pivot, r右侧 >= pivot即可
+        while l < r and num_list[r] >= pivot:
+            r -= 1
+        num_list[l] = num_list[r]
+        while l < r and num_list[l] <= pivot:
+            l += 1
+        num_list[r] = num_list[l]
+    num_list[l] = pivot
     return l
 
 
